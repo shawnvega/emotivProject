@@ -1,0 +1,2 @@
+Requirements:
+Python(32bit) > version 2.5 but less then version 3.0
