@@ -86,11 +86,11 @@ ES_CognitivGetCurrentAction.argtypes= [c_void_p]
 ES_CognitivGetCurrentActionPower=libEDK.ES_CognitivGetCurrentActionPower
 ES_CognitivGetCurrentActionPower.restype = c_float
 ES_CognitivGetCurrentActionPower.argtypes= [c_void_p]
-    
+
 ES_AffectivGetExcitementShortTermModelParams=libEDK.ES_AffectivGetExcitementShortTermModelParams
 ES_AffectivGetExcitementShortTermModelParams.restype = c_void_p
 ES_AffectivGetExcitementShortTermModelParams.argtypes = [c_void_p, POINTER(c_double), POINTER(c_double), POINTER(c_double)]
-    
+
 ES_AffectivGetMeditationModelParams = libEDK.ES_AffectivGetMeditationModelParams
 ES_AffectivGetMeditationModelParams.restype = c_void_p
 ES_AffectivGetMeditationModelParams.argtypes = [c_void_p, POINTER(c_double), POINTER(c_double), POINTER(c_double)]
@@ -105,7 +105,7 @@ ES_AffectivGetFrustrationModelParams.argtypes = [c_void_p, POINTER(c_double), PO
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def logEmoState(userID,eState):
-    print >>f,ES_GetTimeFromStart(eState),",",            
+    print >>f,ES_GetTimeFromStart(eState),",",
     print >>f,userID.value,",",
     print >>f,ES_GetWirelessSignalStatus(eState),",",
     print >>f,ES_ExpressivIsBlink(eState),",",
@@ -191,13 +191,13 @@ elif option == 2:
         print "Cannot connect to EmoComposer on"
 else :
     print "option = ?"
-    
+
 print "Start receiving EEG Data! Press any key to stop logging...\n"
 f = file('ESlog.csv', 'w')
 f = open('ESlog.csv', 'w')
 print >> f,header
 
-i = 0;    
+i = 0;
 while (i<200):
     state = libEDK.EE_EngineGetNextEvent(eEvent)
     if state == 0:
@@ -207,11 +207,24 @@ while (i<200):
             libEDK.EE_EmoEngineEventGetEmoState(eEvent,eState)
             timestamp = ES_GetTimeFromStart(eState)
             print "%10.3f New EmoState from user %d ...\r" %(timestamp,userID.value)
-            logEmoState(userID,eState)   
+            logEmoState(userID,eState)
     elif state != 0x0600:
         print "Internal error in Emotiv Engine ! "
     time.sleep(0.1)
     i+=1
+
+def parseExpression(eState):
+        if (ES_ExpressivIsBlink(eState)):
+            print "[BLINK DETECTED]"
+        if (ES_ExpressivIsLeftWink(eState)):
+            print "[LEFT WINK DETECTED]"
+        if (ES_ExpressivIsRightWink(eState)):
+            print "[RIGHT WINK DETECTED]"
+        if (ES_ExpressivIsLookingRight(eState)):
+            print "[LOOK RIGHT DETECTED]"
+        if (ES_ExpressivIsLookingLeft(eState)):
+            print "[LOOK LEFT DETECTED]"
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------
 libEDK.EE_EngineDisconnect()
 libEDK.EE_EmoStateFree(eState)
