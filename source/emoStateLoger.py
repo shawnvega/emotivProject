@@ -180,7 +180,17 @@ print ">> "
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+def parseExpression(eState):
+        if (ES_ExpressivIsBlink(eState)):
+            print "[BLINK DETECTED]"
+        if (ES_ExpressivIsLeftWink(eState)):
+            print "[LEFT WINK DETECTED]"
+        if (ES_ExpressivIsRightWink(eState)):
+            print "[RIGHT WINK DETECTED]"
+        if (ES_ExpressivIsLookingRight(eState)):
+            print "[LOOK RIGHT DETECTED]"
+        if (ES_ExpressivIsLookingLeft(eState)):
+            print "[LOOK LEFT DETECTED]"
 
 option = int(raw_input())
 if option == 1:
@@ -208,22 +218,15 @@ while (i<200):
             timestamp = ES_GetTimeFromStart(eState)
             print "%10.3f New EmoState from user %d ...\r" %(timestamp,userID.value)
             logEmoState(userID,eState)
+            parseExpression(eState)
+			
+			
     elif state != 0x0600:
         print "Internal error in Emotiv Engine ! "
     time.sleep(0.1)
     i+=1
 
-def parseExpression(eState):
-        if (ES_ExpressivIsBlink(eState)):
-            print "[BLINK DETECTED]"
-        if (ES_ExpressivIsLeftWink(eState)):
-            print "[LEFT WINK DETECTED]"
-        if (ES_ExpressivIsRightWink(eState)):
-            print "[RIGHT WINK DETECTED]"
-        if (ES_ExpressivIsLookingRight(eState)):
-            print "[LOOK RIGHT DETECTED]"
-        if (ES_ExpressivIsLookingLeft(eState)):
-            print "[LOOK LEFT DETECTED]"
+
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------
 libEDK.EE_EngineDisconnect()
