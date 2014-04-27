@@ -11,11 +11,17 @@ public class EmoStateLog
 {      
     public static void main(String[] args) 
     {
+    	boolean COMPOSER = false;
+    	boolean EPOC = true;
+    	
+    	//////////// MODE
+    	boolean mode = COMPOSER;
+    	
     	Pointer eEvent			= Edk.INSTANCE.EE_EmoEngineEventCreate();
     	Pointer eState			= Edk.INSTANCE.EE_EmoStateCreate();
     	IntByReference userID 	= null;
-    	short composerPort		= 1726;
-    	int option 				= 1;
+    	short composerPort		= (mode ? (short)3008 : (short)1726);
+    	int option 				= (mode ? 2 : 1);
     	int state  				= 0;
     	Robot robot = null;
     	try{
@@ -71,6 +77,21 @@ public class EmoStateLog
 					System.out.print("WirelessSignalStatus: ");
 					System.out.println(EmoState.INSTANCE.ES_GetWirelessSignalStatus(eState));
 					
+					int action = EmoState.INSTANCE.ES_CognitivGetCurrentAction(eState);
+					double power = EmoState.INSTANCE.ES_CognitivGetCurrentActionPower(eState);
+					if(power!=0)
+					{
+						if(action == EmoState.EE_CognitivAction_t.COG_LEFT.ToInt()){
+							System.out.println("Left. Power: " + power);
+							robot.keyPress(KeyEvent.VK_UP);
+							robot.keyRelease(KeyEvent.VK_UP);
+						}
+						if(action == EmoState.EE_CognitivAction_t.COG_RIGHT.ToInt()){
+							System.out.println("Right. Power: " + power);
+							robot.keyPress(KeyEvent.VK_DOWN);
+							robot.keyRelease(KeyEvent.VK_DOWN);
+						}
+					}
 					if (EmoState.INSTANCE.ES_ExpressivIsBlink(eState) == 1)
 						System.out.println("Blink");
 					if (EmoState.INSTANCE.ES_ExpressivIsLeftWink(eState) == 1){
@@ -88,17 +109,17 @@ public class EmoStateLog
 					if (EmoState.INSTANCE.ES_ExpressivIsLookingRight(eState) == 1)
 						System.out.println("LookingRight");
 					
-					System.out.print("ExcitementShortTerm: ");
-					System.out.println(EmoState.INSTANCE.ES_AffectivGetExcitementShortTermScore(eState));
-					System.out.print("ExcitementLongTerm: ");
-					System.out.println(EmoState.INSTANCE.ES_AffectivGetExcitementLongTermScore(eState));
-					System.out.print("EngagementBoredom: ");
-					System.out.println(EmoState.INSTANCE.ES_AffectivGetEngagementBoredomScore(eState));
+					//System.out.print("ExcitementShortTerm: ");
+					//System.out.println(EmoState.INSTANCE.ES_AffectivGetExcitementShortTermScore(eState));
+					//System.out.print("ExcitementLongTerm: ");
+					//System.out.println(EmoState.INSTANCE.ES_AffectivGetExcitementLongTermScore(eState));
+					//System.out.print("EngagementBoredom: ");
+					//System.out.println(EmoState.INSTANCE.ES_AffectivGetEngagementBoredomScore(eState));
 					
-					System.out.print("CognitivGetCurrentAction: ");
-					System.out.println(EmoState.INSTANCE.ES_CognitivGetCurrentAction(eState));
-					System.out.print("CurrentActionPower: ");
-					System.out.println(EmoState.INSTANCE.ES_CognitivGetCurrentActionPower(eState));
+					//System.out.print("CognitivGetCurrentAction: ");
+					//System.out.println(EmoState.INSTANCE.ES_CognitivGetCurrentAction(eState));
+					//System.out.print("CurrentActionPower: ");
+					//System.out.println(EmoState.INSTANCE.ES_CognitivGetCurrentActionPower(eState));
 				}
 			}
 			else if (state != EdkErrorCode.EDK_NO_EVENT.ToInt()) {
